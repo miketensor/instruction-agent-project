@@ -5,7 +5,6 @@ Dependencies:
 pip install arize-phoenix opentelemetry-sdk opentelemetry-exporter-otlp openinference-instrumentation-langchain
 pip install -U langchain-core langgraph
 pip install groq
-pip install jsonschema
 
 Principle :
 -------------
