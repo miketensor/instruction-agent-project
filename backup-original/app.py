@@ -28,6 +28,13 @@ shutdown_event = asyncio.Event()
 # Agent 1: Instruction Editor
 # ---------------------------
 async def instruction_editor_loop():
+    """
+    Continuously prompts the user for instructions and forwards each input to the instruction editor node until shutdown is requested.
+    
+    Prompts the user with "Type 'STOP' to shut down the system else Enter instruction:". If the user enters "STOP" (case-insensitive, whitespace ignored), the function sets the module-level shutdown_event and exits the loop. For any other input, it constructs a WorkflowState with "user_id": "user_001" and "raw_text" set to the input, then awaits instruction_editor_node(state).
+    
+    On cancellation, prints "Editor loop cancelled" and re-raises asyncio.CancelledError.
+    """
     try:
         while not shutdown_event.is_set():
             user_input = await asyncio.to_thread(input, "Type 'STOP' to shut down the system else Enter instruction: ")
@@ -52,6 +59,11 @@ async def instruction_editor_loop():
 # Agent 2: Instruction Scanner
 # ---------------------------
 async def instruction_scanner_loop():
+    """
+    Continuously polls the instruction scanner node and prints any discovered instruction text.
+    
+    This loop repeatedly calls the module-level `instruction_scanner_node` with an empty workflow state, prints `scanned_instruction["text"]` when a scanned instruction is returned, and sleeps between iterations. The loop runs until the module-level `shutdown_event` is set.
+    """
     while not shutdown_event.is_set():
         state: WorkflowState = {
             "user_id": "user_001",
@@ -71,6 +83,11 @@ async def instruction_scanner_loop():
 # Agent 3: Validation monitor
 # ---------------------------
 async def validation_monitor_loop():
+    """
+    Periodically invokes the validation monitor node until the global shutdown_event is set.
+    
+    On each iteration it constructs a WorkflowState with "user_id" set to "user_001" and an empty "raw_text", passes it to `validation_monitor_node`, then waits five seconds before repeating.
+    """
     while not shutdown_event.is_set():
         state: WorkflowState = {
             "user_id": "user_001",
@@ -86,6 +103,11 @@ async def validation_monitor_loop():
 # ---------------------------
 async def main():
     
+    """
+    Start three concurrent loops (instruction editor, instruction scanner, validation monitor), wait for the module-level shutdown_event to be set, then cancel those loops and wait for their termination.
+    
+    Prints a shutdown announcement before cancelling tasks and a final confirmation after all tasks complete.
+    """
     tasks = [
         asyncio.create_task(instruction_editor_loop()),
         asyncio.create_task(instruction_scanner_loop()),

@@ -13,8 +13,9 @@ async def validation_monitor_node(
     config: Optional[RunnableConfig] = None,
 ):
     """
-    Background agent that continuously monitors
-    how many instructions require user validation.
+    Continuously monitors stored instructions and logs how many require user validation.
+    
+    This background task repeatedly (every 5 seconds) acquires the shared file lock, counts records whose "status" is "Requires user validation", and prints a UTC timestamped message with the count. The `state` and optional `config` parameters are accepted for integration but are not used by this monitor.
     """
     while True:
         async with file_lock:

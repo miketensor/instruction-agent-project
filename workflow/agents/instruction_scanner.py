@@ -16,6 +16,23 @@ async def instruction_scanner_node(
     state: WorkflowState,
     config: Optional[RunnableConfig] = None,
 ):
+    """
+    Scans stored instructions for the next record with status "new", classifies it with the LLM, updates its status and timestamps, persists changes, and returns the selected instruction's details.
+    
+    Parameters:
+        state (WorkflowState): Workflow state (not used by this node).
+        config (Optional[RunnableConfig]): Optional runtime configuration (not used by this node).
+    
+    Returns:
+        dict: If an instruction was selected, returns
+            {
+                "scanned_instruction": dict,  # the updated instruction record
+                "user_id": <user id from the record>,
+                "raw_text": <original instruction text>
+            }
+        Otherwise returns:
+            {"scanned_instruction": None}
+    """
     selected_instruction: Optional[dict] = None
 
     # -----------------------

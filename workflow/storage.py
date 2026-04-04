@@ -28,6 +28,14 @@ file_lock = Lock()
 
 
 async def load_instructions():
+    """
+    Load and validate instructions from the persistent JSON file.
+    
+    If the storage file does not exist or is empty, returns an empty list. If the file contains invalid JSON or fails schema validation, the file is reset to an empty JSON array and an empty list is returned.
+    
+    Returns:
+        list: Instruction objects read from the file; empty list if the file is missing, empty, corrupted, or invalid.
+    """
     if not os.path.exists(DATA_PATH):
         return []
 
