@@ -4,23 +4,23 @@ from workflow.agents.instruction_editor import instruction_editor_node
 from workflow.agents.instruction_scanner import instruction_scanner_node
 from workflow.agents.validation_monitor import validation_monitor_node
 
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from openinference.instrumentation.langchain import LangChainInstrumentor
+# from opentelemetry import trace
+# from opentelemetry.sdk.trace import TracerProvider
+# from opentelemetry.sdk.trace.export import BatchSpanProcessor
+# from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+# from openinference.instrumentation.langchain import LangChainInstrumentor
 
 import asyncio
 from workflow.state import WorkflowState
 
 # --- 1. OPENTELEMETRY & PHOENIX SETUP ---
-endpoint = "http://localhost:6006/v1/traces"
-provider = TracerProvider()
-provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint)))
-trace.set_tracer_provider(provider)
-tracer = trace.get_tracer(__name__)
+# endpoint = "http://localhost:6006/v1/traces"
+# provider = TracerProvider()
+# provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint)))
+# trace.set_tracer_provider(provider)
+# tracer = trace.get_tracer(__name__)
 
-LangChainInstrumentor().instrument()
+# LangChainInstrumentor().instrument()
 
 shutdown_event = asyncio.Event()
 

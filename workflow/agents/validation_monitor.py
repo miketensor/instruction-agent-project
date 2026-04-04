@@ -9,7 +9,7 @@ from langchain_core.runnables import RunnableConfig
 from workflow.state import WorkflowState
 from workflow.storage import file_lock, load_instructions
 
-tracer = trace.get_tracer(__name__)
+# tracer = trace.get_tracer(__name__)
 
 async def validation_monitor_node(
     state: WorkflowState,
@@ -19,12 +19,12 @@ async def validation_monitor_node(
     Background agent that continuously monitors
     how many instructions require user validation.
     """
-    with tracer.start_as_current_span("validation_monitor") as span:
+    # with tracer.start_as_current_span("validation_monitor") as span:
         # Log Input
-        span.set_attribute(
-            "input",
-            "scan the instruction file"
-        )
+        # span.set_attribute(
+        #     "input",
+        #     "scan the instruction file"
+        # )
 
     while True:
         async with file_lock:
@@ -38,8 +38,8 @@ async def validation_monitor_node(
             )
 
         # Trace it
-        with tracer.start_as_current_span("validation_monitor") as span:
-            span.set_attribute("validation_count", count)
+        # with tracer.start_as_current_span("validation_monitor") as span:
+        #     span.set_attribute("validation_count", count)
 
         print(
             f"[{datetime.utcnow().isoformat()}] "

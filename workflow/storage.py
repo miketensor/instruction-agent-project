@@ -13,7 +13,7 @@ INSTRUCTION_SCHEMA = {
         "timestamp": {"type": "string"},
         "text": {"type": "string"},
         "status": {"type": "string"},
-        "processing_timestamp": {"type": "string", "required": False}
+        "processing_timestamp": {"type": "string"}
     },
     "required": ["user_id", "timestamp", "text", "status"]
 }
