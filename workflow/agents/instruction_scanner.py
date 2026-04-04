@@ -3,14 +3,11 @@ import os
 from typing import Optional
 
 from datetime import datetime
-from opentelemetry import trace
 from langchain_core.runnables import RunnableConfig
 
 from workflow.state import WorkflowState
 from workflow.agents.instruction_classifier import classify_instruction_with_llm
 from workflow.storage import file_lock, load_instructions, save_instructions
-
-# tracer = trace.get_tracer(__name__)
 
 # ----------------------------
 # Agent 2 Node
@@ -19,14 +16,7 @@ async def instruction_scanner_node(
     state: WorkflowState,
     config: Optional[RunnableConfig] = None,
 ):
-    # with tracer.start_as_current_span("instruction_scanner") as span:
-
     selected_instruction: Optional[dict] = None
-    
-    # span.set_attribute(
-    #     "input",
-    #     json.dumps(state)
-    # )
 
     # -----------------------
     # Critical Section
@@ -55,25 +45,17 @@ async def instruction_scanner_node(
 
         if selected_instruction:
             await save_instructions(instructions)
-        # -----------------------
-                
-        if selected_instruction:
-            # span.set_attribute(
-            #         "output",
-            #         json.dumps(selected_instruction)
-            #     )
+    # -----------------------
             
-            return {
-                "scanned_instruction": selected_instruction,
-                "user_id": selected_instruction["user_id"],
-                "raw_text": selected_instruction["text"],
-            }
-
-        # span.set_attribute(
-        #         "output",
-        #         ""
-        #     )
-    
+    if selected_instruction:
+        
         return {
-            "scanned_instruction": None
+            "scanned_instruction": selected_instruction,
+            "user_id": selected_instruction["user_id"],
+            "raw_text": selected_instruction["text"],
         }
+
+    
+    return {
+        "scanned_instruction": None
+    }

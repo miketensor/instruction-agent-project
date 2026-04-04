@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import re
-from opentelemetry import trace
 from groq import Groq
 
 api_key = os.getenv("GROQ_API_KEY")
@@ -12,8 +11,6 @@ if not api_key:
 
 client = Groq(api_key=api_key)
 MODEL_NAME = "llama-3.1-8b-instant"  # Groq supported model
-
-# tracer = trace.get_tracer(__name__)
 
 def sanitize_input(text: str) -> str:
     """Sanitize user input to prevent prompt injection."""
@@ -25,7 +22,6 @@ def sanitize_input(text: str) -> str:
     return text[:1000]  # Reasonable limit for instruction text
 
 async def classify_instruction_with_llm(text: str) -> dict:
-    # with tracer.start_as_current_span("instruction_classifier"):
     # Sanitize input to prevent prompt injection
     sanitized_text = sanitize_input(text)
     
