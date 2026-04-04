@@ -1,0 +1,9 @@
+[
+  {
+    "user_id": "user_001",
+    "timestamp": "2026-02-21T17:05:18.486476",
+    "text": "payment",
+    "status": "Requires user validation",
+    "processing_timestamp": "2026-02-21T17:06:41.505843"
+  }
+]
