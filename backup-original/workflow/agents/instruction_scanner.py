@@ -19,6 +19,22 @@ async def instruction_scanner_node(
     state: WorkflowState,
     config: Optional[RunnableConfig] = None,
 ):
+    """
+    Select the first persisted instruction with status "new", update its status according to an LLM classification, persist the change, and return the selected instruction with extracted metadata.
+    
+    This function acquires a file lock, scans stored instructions to find the first record whose `status` is `"new"`, updates that record's status and processing timestamp, classifies the instruction text to decide whether it requires user validation or can be executed, and saves the updated instruction list. It also records input and output into the active tracing span.
+    
+    Parameters:
+        state (WorkflowState): Current workflow state provided to the node.
+    
+    Returns:
+        dict: If an instruction was selected, returns a dict with:
+            - "scanned_instruction": the updated instruction record (dict)
+            - "user_id": the selected instruction's `user_id`
+            - "raw_text": the selected instruction's `text`
+        Otherwise returns:
+            - {"scanned_instruction": None}
+    """
     with tracer.start_as_current_span("instruction_scanner") as span:
 
         selected_instruction: Optional[dict] = None

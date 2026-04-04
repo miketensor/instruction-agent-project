@@ -13,7 +13,15 @@ from workflow.storage import file_lock, load_instructions, save_instructions
 tracer = trace.get_tracer(__name__)
 
 def clean_text(text: str) -> str:
-    """Basic cleansing logic."""
+    """
+    Normalize whitespace in a text string.
+    
+    Parameters:
+        text (str): The input string to normalize.
+    
+    Returns:
+        str: The input with leading and trailing whitespace removed and all internal runs of whitespace collapsed into single spaces.
+    """
     return " ".join(text.strip().split())
 
 
@@ -22,7 +30,19 @@ async def instruction_editor_node(
     config: Optional[RunnableConfig] = None,
 ):
     """
-    Writes a new instruction into instruction.json safely using a shared async lock.
+    Create, persist, and return a cleaned instruction record derived from the provided workflow state.
+    
+    The function extracts `raw_text` (and optionally `user_id`) from `state`, normalizes the text, constructs an instruction record with a UTC ISO-8601 timestamp and status `"new"`, persists that record to the shared instruction store, and returns metadata about the created record.
+    
+    Parameters:
+        state (WorkflowState): Workflow state containing at least the key `"raw_text"`. If `"user_id"` is present it will be used; otherwise a new UUID will be generated.
+    
+    Returns:
+        dict: A mapping with the following keys:
+            - `user_id` (str): The user identifier associated with the instruction.
+            - `raw_text` (str): The original text from `state`.
+            - `cleaned_text` (str): The normalized text after whitespace collapsing.
+            - `instruction_record` (dict): The persisted instruction record containing `user_id`, `timestamp` (UTC ISO-8601 string), `text` (cleaned), and `status` (`"new"`).
     """
 
     with tracer.start_as_current_span("instruction_editor") as span:

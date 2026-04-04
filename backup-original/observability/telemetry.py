@@ -5,6 +5,14 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 
 
 def setup_tracing():
+    """
+    Initialize and register OpenTelemetry tracing with an OTLP gRPC exporter and attach a batch span processor.
+    
+    This configures a new TracerProvider, registers it as the global provider, creates an OTLPSpanExporter targeting http://localhost:4317 (insecure), wraps it in a BatchSpanProcessor added to the provider, and returns a tracer scoped to this module.
+    
+    Returns:
+        tracer (opentelemetry.trace.Tracer): Tracer for the current module namespace.
+    """
     provider = TracerProvider()
     trace.set_tracer_provider(provider)
 

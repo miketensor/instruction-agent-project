@@ -13,7 +13,15 @@ client = Groq(api_key=api_key)
 MODEL_NAME = "llama-3.1-8b-instant"  # Groq supported model
 
 def sanitize_input(text: str) -> str:
-    """Sanitize user input to prevent prompt injection."""
+    """
+    Normalize and truncate user-provided instruction text for safe inclusion in LLM prompts.
+    
+    Parameters:
+        text (str): Raw user-provided text to sanitize.
+    
+    Returns:
+        sanitized_text (str): The input with surrounding whitespace removed, newline/carriage return/tab characters replaced by single spaces, and truncated to at most 1000 characters.
+    """
     # Remove or escape potentially dangerous characters
     text = text.strip()
     # Remove newlines and tabs that could break prompt structure
@@ -23,6 +31,17 @@ def sanitize_input(text: str) -> str:
 
 async def classify_instruction_with_llm(text: str) -> dict:
     # Sanitize input to prevent prompt injection
+    """
+    Classify whether a user instruction pertains to payments, money transfers, billing, invoices, subscriptions, or other financial transactions.
+    
+    Parameters:
+        text (str): The instruction text to classify.
+    
+    Returns:
+        dict: A dictionary with keys:
+            - `is_payment` (bool): `True` if the instruction relates to a payment or financial transaction, `False` otherwise.
+            - `reason` (str): A short explanation supporting the classification.
+    """
     sanitized_text = sanitize_input(text)
     
     prompt = f"""

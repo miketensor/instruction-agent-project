@@ -31,7 +31,11 @@ async def test_instruction_scanner_no_new_instructions():
 
 @pytest.mark.asyncio
 async def test_instruction_scanner_processes_new_instruction():
-    """Test scanner processing a new instruction."""
+    """
+    Verifies that a newly found instruction flagged as a payment is classified, persisted with user-validation status and processing timestamp, and returned by the scanner.
+    
+    Mocks loading, classification, and saving of instructions; asserts the classifier is called once with the instruction text, exactly one instruction is saved with status "Requires user validation" and a "processing_timestamp" field, and the node's returned `scanned_instruction` matches the saved instruction.
+    """
     state: WorkflowState = {
         "user_id": "test_user",
         "raw_text": ""
