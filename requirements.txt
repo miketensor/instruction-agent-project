@@ -1,0 +1,4 @@
+groq
+langchain-core
+langchain-openai
+pytest
