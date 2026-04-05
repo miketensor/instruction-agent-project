@@ -1,0 +1,22 @@
+name: Python CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5  # Updated from v4
+    - name: Set up Python
+      uses: actions/setup-python@v5 # Updated from v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Run tests with pytest
+      env:
+        # This maps the GitHub Secret to an Environment Variable the code can see
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      run: pytest
