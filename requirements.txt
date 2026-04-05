@@ -1,6 +1,7 @@
 groq
 langchain-core
 langchain-openai
+langgraph
 jsonschema
 pytest
 pytest-asyncio
