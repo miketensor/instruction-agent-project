@@ -1,4 +1,5 @@
 groq
 langchain-core
 langchain-openai
+jsonschema
 pytest
